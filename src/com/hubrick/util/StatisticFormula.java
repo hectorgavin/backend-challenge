@@ -37,6 +37,6 @@ public class StatisticFormula {
         return numbers.stream()
                       .reduce(BigDecimal::add)
                       .get()
-                      .divide(new BigDecimal(numbers.size()), RoundingMode.HALF_EVEN);
+                      .divide(new BigDecimal(numbers.size()), 2, RoundingMode.HALF_EVEN);
     }
 }
