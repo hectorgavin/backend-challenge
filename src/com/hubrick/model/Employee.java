@@ -30,7 +30,7 @@ public class Employee {
             int age,
             Sex sex,
             BigDecimal income,
-            Department department) throws Exception {
+            Department department) {
 
         this.name = name;
         this.age = age;
