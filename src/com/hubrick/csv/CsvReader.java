@@ -17,7 +17,7 @@ public class CsvReader {
      * @param separator Column Separator character
      * @return Stream of CSV rows
      */
-    public static Stream<List<String>> read(Path source, String separator) {
+    public static Stream<List<String>> stream(Path source, String separator) {
         try {
             Stream<String> lines = Files.lines(source);
             return lines.map(line -> Arrays.asList(line.split(separator)));
@@ -28,7 +28,7 @@ public class CsvReader {
         }
     }
 
-    public static Stream<List<String>> read(Path path) {
-        return read(path, DEFAULT_SEPARATOR);
+    public static Stream<List<String>> stream(Path path) {
+        return stream(path, DEFAULT_SEPARATOR);
     }
 }

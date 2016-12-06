@@ -25,7 +25,7 @@ public class Department {
      */
     public static List<Department> findAll() {
         if (departments == null) {
-            departments = CsvReader.read(ConfigHolder.baseDir.resolve("departments.csv"))
+            departments = CsvReader.stream(ConfigHolder.baseDir.resolve("departments.csv"))
                                    .sorted((d1, d2) -> d1.get(0).compareToIgnoreCase(d2.get(0)))
                                    .map(row -> new Department(row.get(0)))
                                    .collect(toList());

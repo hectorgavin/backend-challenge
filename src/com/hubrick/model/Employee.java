@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
 public class Employee {
@@ -22,7 +25,13 @@ public class Employee {
 
     private Employee() {}
 
-    private Employee(String name, int age, Sex sex, BigDecimal income, Department department) throws Exception{
+    private Employee(
+            String name,
+            int age,
+            Sex sex,
+            BigDecimal income,
+            Department department) throws Exception {
+
         this.name = name;
         this.age = age;
         this.sex = sex;
@@ -38,8 +47,57 @@ public class Employee {
         return income;
     }
 
-    public Department getDepartment() {
+    private Department getDepartment() {
         return department;
+    }
+
+    /**
+     * Returns all employees. The first time the method is called, it fetches the data from "employees.csv" and "ages.csv".
+     * @return List of employees
+     */
+    public static List<Employee> getEmployees() {
+        if (employees == null) {
+            Map<String, Integer> employeeAges =
+                CsvReader.stream(ConfigHolder.baseDir.resolve("ages.csv"))
+                         .collect(Collectors.toMap(
+                            row -> row.get(0),
+                            row -> Integer.valueOf(row.get(1))
+                         ));
+
+            setEmployees(
+                CsvReader.stream(ConfigHolder.baseDir.resolve("employees.csv"))
+                         .map(row -> {
+                             try {
+                                 return new Employee(
+                                     row.get(1),
+                                     employeeAges.get(row.get(1)),
+                                     Sex.findByShortName(row.get(2)),
+                                     new BigDecimal(row.get(3)),
+                                     Department.findAll().get(Integer.valueOf(row.get(0)) - 1)
+                                 );
+                             }
+                             catch (SexNotFoundException e) {
+                                 System.err.println("Row "+ row +" has an invalid sex");
+                             }
+                             catch (NumberFormatException e) {
+                                 System.err.println("Row "+ row +" has an invalid income");
+                             }
+                             catch (IndexOutOfBoundsException e) {
+                                 System.err.println("Row "+ row +" has an invalid department");
+                             }
+                             catch (Exception e) {
+                                 System.err.println("Row "+ row +" is invalid");
+                             }
+                             return INVALID_EMPLOYEE;
+                         })
+                         .filter(Employee::isValid)
+                         .collect(toList()));
+        }
+        return employees;
+    }
+
+    private static void setEmployees(List<Employee> theEmployees) {
+        employees = theEmployees;
     }
 
     private boolean isValid() {
@@ -50,49 +108,17 @@ public class Employee {
                department != null;
     }
 
-    /**
-     * Returns all employees. The first time the method is called, it fetches the data from "employees.csv" and "ages.csv".
-     * @return List of employees
-     */
-    public static List<Employee> findAll() {
-        if (employees == null) {
-            Map<String, Integer> employeeAges = CsvReader.read(ConfigHolder.baseDir.resolve("ages.csv"))
-                                                         .collect(Collectors.toMap(row -> row.get(0), row -> Integer.valueOf(row.get(1))));
-
-            employees = CsvReader.read(ConfigHolder.baseDir.resolve("employees.csv"))
-                                 .map(row -> {
-                                    try {
-                                        return new Employee(
-                                            row.get(1),
-                                            employeeAges.get(row.get(1)),
-                                            Sex.findByShortName(row.get(2)),
-                                            new BigDecimal(row.get(3)),
-                                            Department.findAll().get(Integer.valueOf(row.get(0)) - 1)
-                                        );
-                                    }
-                                    catch (SexNotFoundException e) {
-                                        System.err.println("Row "+ row +" has an invalid sex");
-                                    }
-                                    catch (NumberFormatException e) {
-                                        System.err.println("Row "+ row +" has an invalid income");
-                                    }
-                                    catch (IndexOutOfBoundsException e) {
-                                        System.err.println("Row "+ row +" has an invalid department");
-                                    }
-                                    catch (Exception e) {
-                                        System.err.println("Row "+ row +" is invalid");
-                                    }
-                                    return INVALID_EMPLOYEE;
-                                 })
-                                 .filter(Employee::isValid)
-                                 .collect(toList());
-        }
-        return employees;
+    public static List<Employee> findAllWithAgeBetween(int minAge, int maxAge) {
+        return getEmployees().stream()
+                             .filter(e -> e.getAge() >= minAge && e.getAge() <= maxAge)
+                             .collect(toList());
     }
 
-    public static List<Employee> findAllWithAgeUnder(int age) {
-        return employees.stream()
-                        .filter(e -> e.getAge() <= age)
-                        .collect(toList());
+    public static Map<Department, List<Employee>> groupAllByDepartment() {
+        return getEmployees().stream()
+                             .collect(groupingBy(
+                                Employee::getDepartment,
+                                mapping(identity(), toList())
+                             ));
     }
 }

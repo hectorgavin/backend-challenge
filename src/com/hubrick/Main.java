@@ -24,6 +24,6 @@ public class Main {
         ReportGenerator.nPercentileIncomeByDepartment("income-by-department.csv", 50);
         ReportGenerator.nPercentileIncomeByDepartment("income-95-by-department.csv", 95);
         ReportGenerator.medianAgeByDepartment("employee-age-by-department.csv");
-        ReportGenerator.averageIncomeByAgeRangesWithFactorOfTen("income-average-by-age-range.csv");
+        ReportGenerator.averageIncomeByAgeRangesWithFactorOfN("income-average-by-age-range.csv", 10);
     }
 }

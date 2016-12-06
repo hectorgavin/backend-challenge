@@ -14,13 +14,17 @@ public class StatisticFormula {
      * Percentile calculation based on https://en.wikipedia.org/wiki/Percentile#The_Nearest_Rank_method
      */
     public static BigDecimal percentileBigDecimal(int percentile, List<BigDecimal> numbers) {
-        List<BigDecimal> sortedNumbers = numbers.stream().sorted().collect(toList());
+        List<BigDecimal> sortedNumbers = numbers.stream()
+                                                .sorted()
+                                                .collect(toList());
         int n = (int) Math.round(numbers.size() * percentile / 100.0);
         return sortedNumbers.get(n - 1);
     }
 
     public static Integer percentile(int percentile, List<Integer> numbers) {
-        List<Integer> sortedNumbers = numbers.stream().sorted().collect(toList());
+        List<Integer> sortedNumbers = numbers.stream()
+                                             .sorted()
+                                             .collect(toList());
         int n = (int) Math.round(numbers.size() * percentile / 100.0);
         return sortedNumbers.get(n - 1);
     }
