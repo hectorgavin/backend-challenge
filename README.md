@@ -1,6 +1,6 @@
-# README #
+# Hubrick Backend's Code Challenge #
 
-This respository contains a solution for the Hubrick's Code Challenge.
+This respository contains a solution for the Hubrick Backend's Code Challenge.
 
 ### Usage: ###
 
