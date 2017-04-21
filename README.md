@@ -1,6 +1,6 @@
-# Hubrick Backend's Code Challenge #
+# Hubrick Backend Code Challenge #
 
-This respository contains a solution for the Hubrick Backend's Code Challenge.
+This respository contains a solution for the Hubrick Backend Code Challenge.
 
 ### Usage: ###
 
@@ -19,7 +19,7 @@ java -jar CsvReport.jar <SOURCE_DIR>
 * com.hubrick.util: Config holder and a small Statistics module
 
 ### TODO ###
-Due to time constraints, the following features/improvementes have not been implemented:
+Due to time constraints, the following features/improvements have not been implemented:
 
 * Improve robustness of CsvReader and CsvWriter so that it strictly follows RFC 4180 (preferably use an external library for it)
 * Write more Unit tests for each of the components of the system
